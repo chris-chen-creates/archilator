@@ -1,5 +1,9 @@
-import { Expression, Binary } from './Expression';
+import { Expression, Binary, Literal } from './Expression';
 import { Token, TokenType } from './Token';
+
+export function parse(tokens: Token[]): Expression {
+    return new Parser(tokens).parse();
+}
 
 class ParserError extends Error {};
 
@@ -11,18 +15,32 @@ export class Parser {
 	) {}
 
 	parse(): Expression {
-		throw(new ParserError("parse: not implemented"));
+		if (this.tokens.length !== 3) {
+			throw(new ParserError("Wrong token types"));
+		}
+		let [left, op, right] = this.tokens;
+		return new Binary(
+			new Literal(left.literal),
+			op,
+			new Literal(right.literal),
+		);
 	}
 
 	term(): Expression {
 		let expression = this.literal()
 		if (this.match(TokenType.PLUS)) {
+			const op = this.previous();
+			const right = this.literal();
+			expression = new Binary(expression, op, right);
 		}
 		return expression;
 	}
 
 	literal(): Expression {
-		throw(new ParserError("literal: not implemented"));
+		if (this.match(TokenType.NUMBER)) {
+			return new Literal(this.previous().literal);
+		}
+		throw(new ParserError("Unexpected primary parse token ${peek().type}"));
 	}
 
 	match(...ttypes: TokenType[]): Boolean {

@@ -1,6 +1,9 @@
 import { createInterface } from 'readline';
 
+import { Interpreter } from './Interpreter';
+
 class Calculator {
+    private interpreter = new Interpreter();
 	private rl = createInterface({
 		input: process.stdin,
 		output: process.stdout,
@@ -12,7 +15,11 @@ class Calculator {
 
 	async recursivePrompt() {
 		this.rl.question("> ", (line: string) => {
-			console.log(line);
+            try {
+                console.log(this.interpreter.eval(line));
+            } catch(e) {
+                console.error(e);
+            }
 			this.recursivePrompt();
 		});
 	}
