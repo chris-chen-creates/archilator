@@ -42,7 +42,7 @@ export class Scanner {
 		throw(new ScannerError("isAtEnd: not implemented"));
 	}
 
-	peek(): String {
+	peek(): string {
 		throw(new ScannerError("peek: not implemented"));
 	}
 
