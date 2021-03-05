@@ -147,7 +147,8 @@ export class Scanner {
 
   match(): boolean {
     if (this.isAtEnd()) return false
-    if (this.input.charAt(this.index)/* Find the equivalent of != expected */) return false
+    if (this.input.charAt(this.index) /* Find the equivalent of != expected */)
+      return false
     //unsure about this ^^^
 
     this.index++
@@ -166,10 +167,10 @@ export class Scanner {
   }
   // Figure out what's wrong with this throwing an error when it moves past the end.
   advance(): string {
-    // if (this.index > this.input.length) {
-    return this.input.charAt(this.index++)
-    // } else {
-    //   throw new ScannerError('Input is at end')
-    // }
+    if (this.index < this.input.length) {
+      return this.input.charAt(this.index++)
+    } else {
+      throw new ScannerError('Input is at end')
+    }
   }
 }

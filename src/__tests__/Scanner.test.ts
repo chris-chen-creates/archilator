@@ -6,7 +6,7 @@ isAtEnd basic test -- passed
 isAtEnd negative index -- passed
 advance basic test -- passed
 advance moves index -- passed
-advance throws error past end
+advance throws error past end -- passed
 scanNext simple characters -- passed
 scanNext properly handles numbers
 scanNext throws an error if it does not recognize the character
