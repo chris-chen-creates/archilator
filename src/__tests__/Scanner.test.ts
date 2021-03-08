@@ -8,7 +8,7 @@ advance basic test -- passed
 advance moves index -- passed
 advance throws error past end -- passed
 scanNext simple characters -- passed
-scanNext properly handles numbers
+scanNext properly handles numbers -- passed
 scanNext throws an error if it does not recognize the character -- passed
 scanTokens ignores spaces
 */
