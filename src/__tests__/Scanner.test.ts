@@ -9,7 +9,7 @@ advance moves index -- passed
 advance throws error past end -- passed
 scanNext simple characters -- passed
 scanNext properly handles numbers
-scanNext throws an error if it does not recognize the character
+scanNext throws an error if it does not recognize the character -- passed
 scanTokens ignores spaces
 */
 
@@ -66,7 +66,6 @@ test('advance throws error past end', () => {
   expect(() => {
     scanner.advance()
   }).toThrow(/.*at end.*/)
-  //expect(scanner.advance()).toThrow(/.*at end.*/)
 })
 
 test.each([
@@ -102,7 +101,10 @@ test('scanNext properly handles numbers', () => {
 test('scanNext throws an error if it does not recognize the character', () => {
   const scanner = new Scanner('>')
   // Error text should contain: 'unexpected character"
-  expect(scanner.scanNext).toThrow(/.*unexpected character.*/)
+  // expect(scanner.scanNext).toThrow(/.*unexpected character.*/)
+  expect(() => {
+    scanner.scanNext()
+  }).toThrow(/.*unexpected character.*/)
 })
 
 test('scanTokens ignores spaces', () => {

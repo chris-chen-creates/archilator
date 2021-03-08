@@ -25,8 +25,9 @@ export class Scanner {
   }
 
   scanNext(): Token {
-    const char = this.advance()
 
+    const char = this.advance()
+    
     switch (char) {
       case '+':
         return {
@@ -132,10 +133,7 @@ export class Scanner {
         break
       // Trying to get pass scanTokens ignores spaces
       // case '':
-      // return {
-      //   ttype:
-      //   text: '',
-      // }
+      // return char.trim()
       //   break
 
       // Not sure why the default is not throwing an error properly
@@ -165,7 +163,7 @@ export class Scanner {
   peek(): string {
     throw new ScannerError('peek: not implemented')
   }
-  // Figure out what's wrong with this throwing an error when it moves past the end.
+
   advance(): string {
     if (this.index < this.input.length) {
       return this.input.charAt(this.index++)
