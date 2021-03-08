@@ -13,6 +13,9 @@ export class Scanner {
 
   scanTokens(): Token[] {
     const tokens = []
+    if (this.peek() == ' ') {
+      this.advance()
+    }
 
     while (!this.isAtEnd()) {
       const token = this.scanNext()
@@ -26,7 +29,6 @@ export class Scanner {
 
   scanNext(): Token {
     const char = this.advance()
-
     switch (char) {
       case '+':
         return {
@@ -140,26 +142,10 @@ export class Scanner {
           literal: 9,
         }
         break
-      // Trying to get pass scanTokens ignores spaces
-      // case '':
-      // return char.trim()
-      //   break
-
-      // Not sure why the default is not throwing an error properly
       default:
         throw new ScannerError(`scanNext: unexpected character: ${char}`)
         break
     }
-  }
-
-  match(): boolean {
-    if (this.isAtEnd()) return false
-    if (this.input.charAt(this.index) /* Find the equivalent of != expected */)
-      return false
-    //unsure about this ^^^
-
-    this.index++
-    return true
   }
 
   isAtEnd(): boolean {
@@ -169,15 +155,16 @@ export class Scanner {
     return this.index >= this.input.length
   }
 
-  peek(): string {
-    throw new ScannerError('peek: not implemented')
-  }
-
   advance(): string {
     if (this.index < this.input.length) {
       return this.input.charAt(this.index++)
     } else {
       throw new ScannerError('Input is at end')
     }
+  }
+
+  peek(): string {
+    if (this.isAtEnd()) return ''
+    return this.input.charAt(this.index)
   }
 }

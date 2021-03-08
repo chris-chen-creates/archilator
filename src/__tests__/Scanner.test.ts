@@ -10,7 +10,7 @@ advance throws error past end -- passed
 scanNext simple characters -- passed
 scanNext properly handles numbers -- passed
 scanNext throws an error if it does not recognize the character -- passed
-scanTokens ignores spaces
+scanTokens ignores spaces -- passed
 */
 
 const each = require('jest-each').default
@@ -35,7 +35,7 @@ test.each([
 test('isAtEnd negative index', () => {
   const scanner = new Scanner('')
   scanner.index = -1
-  // Error text should contain: 'negative"
+  // Error text should contain: 'negative'
   expect(() => {
     scanner.isAtEnd()
   }).toThrow(/.*negative.*/)
