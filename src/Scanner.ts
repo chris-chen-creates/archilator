@@ -13,7 +13,6 @@ export class Scanner {
 
   scanTokens(): Token[] {
     const tokens = []
-
     while (!this.isAtEnd()) {
       if (this.peek() == ' ') {
         this.advance()

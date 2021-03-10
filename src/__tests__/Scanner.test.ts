@@ -103,3 +103,23 @@ test('scanTokens ignores spaces', () => {
     },
   ])
 })
+
+test('scanTokens ignores internal spaces', () => {
+  const tokens = new Scanner('5+ 4').scanTokens()
+  expect(tokens).toEqual([
+    {
+      ttype: TokenType.NUMBER,
+      text: '5',
+      literal: 5,
+    },
+    {
+      ttype: TokenType.PLUS,
+      text: '+',
+    },
+    {
+      ttype: TokenType.NUMBER,
+      text: '4',
+      literal: 4,
+    },
+  ])
+})
