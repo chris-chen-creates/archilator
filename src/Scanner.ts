@@ -13,11 +13,11 @@ export class Scanner {
 
   scanTokens(): Token[] {
     const tokens = []
-    if (this.peek() == ' ') {
-      this.advance()
-    }
 
     while (!this.isAtEnd()) {
+      if (this.peek() == ' ') {
+        this.advance()
+      }
       const token = this.scanNext()
       if (token) {
         tokens.push(token)
@@ -73,73 +73,19 @@ export class Scanner {
         }
         break
       case '0':
-        return {
-          ttype: TokenType.NUMBER,
-          text: '0',
-          literal: 0,
-        }
-        break
       case '1':
-        return {
-          ttype: TokenType.NUMBER,
-          text: '1',
-          literal: 1,
-        }
-        break
       case '2':
-        return {
-          ttype: TokenType.NUMBER,
-          text: '2',
-          literal: 2,
-        }
-        break
       case '3':
-        return {
-          ttype: TokenType.NUMBER,
-          text: '3',
-          literal: 3,
-        }
-        break
       case '4':
-        return {
-          ttype: TokenType.NUMBER,
-          text: '4',
-          literal: 4,
-        }
-        break
       case '5':
-        return {
-          ttype: TokenType.NUMBER,
-          text: '5',
-          literal: 5,
-        }
-        break
       case '6':
-        return {
-          ttype: TokenType.NUMBER,
-          text: '6',
-          literal: 6,
-        }
-        break
       case '7':
-        return {
-          ttype: TokenType.NUMBER,
-          text: '7',
-          literal: 7,
-        }
-        break
       case '8':
-        return {
-          ttype: TokenType.NUMBER,
-          text: '8',
-          literal: 8,
-        }
-        break
       case '9':
         return {
           ttype: TokenType.NUMBER,
-          text: '9',
-          literal: 9,
+          text: char,
+          literal: parseFloat(char),
         }
         break
       default:

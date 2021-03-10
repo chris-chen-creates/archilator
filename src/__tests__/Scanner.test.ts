@@ -1,18 +1,6 @@
 import { Scanner } from '../Scanner'
 import { TokenType } from '../Token'
 
-/*
-isAtEnd basic test -- passed
-isAtEnd negative index -- passed
-advance basic test -- passed
-advance moves index -- passed
-advance throws error past end -- passed
-scanNext simple characters -- passed
-scanNext properly handles numbers -- passed
-scanNext throws an error if it does not recognize the character -- passed
-scanTokens ignores spaces -- passed
-*/
-
 const each = require('jest-each').default
 
 test.each([
@@ -101,7 +89,6 @@ test('scanNext properly handles numbers', () => {
 test('scanNext throws an error if it does not recognize the character', () => {
   const scanner = new Scanner('>')
   // Error text should contain: 'unexpected character"
-  // expect(scanner.scanNext).toThrow(/.*unexpected character.*/)
   expect(() => {
     scanner.scanNext()
   }).toThrow(/.*unexpected character.*/)
