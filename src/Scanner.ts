@@ -2,7 +2,7 @@ import { Token, TokenType } from './Token'
 
 class ScannerError extends Error {}
 
-function scan(input: string): Token[] {
+export function scan(input: string): Token[] {
   return new Scanner(input).scanTokens()
 }
 
@@ -16,6 +16,7 @@ export class Scanner {
     while (!this.isAtEnd()) {
       if (this.peek() == ' ') {
         this.advance()
+        continue
       }
       const token = this.scanNext()
       if (token) {
@@ -71,6 +72,7 @@ export class Scanner {
           text: '^',
         }
         break
+      case '.':
       case '0':
       case '1':
       case '2':
@@ -81,10 +83,14 @@ export class Scanner {
       case '7':
       case '8':
       case '9':
+        let numberstr = char
+        while (!this.isAtEnd() && '.0123456789'.includes(this.peek())) {
+          numberstr += this.advance()
+        }
         return {
           ttype: TokenType.NUMBER,
-          text: char,
-          literal: parseFloat(char),
+          text: numberstr,
+          literal: parseFloat(numberstr),
         }
         break
       default:
