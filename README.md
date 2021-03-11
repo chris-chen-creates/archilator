@@ -16,7 +16,7 @@ A simple terminal-based calculator 🧮
 
 ## How to run
 1. Open a terminal window
-2. Navidage to the Archilator project
+2. Navigate to the Archilator project
 3. Within terminal, use the command:
    
         npm start 
