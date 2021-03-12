@@ -123,3 +123,43 @@ test('scanTokens ignores internal spaces', () => {
     },
   ])
 })
+
+test('scanTokens handles multicharacter strings', () => {
+  const tokens = new Scanner('10 + 18').scanTokens()
+  expect(tokens).toEqual([
+    {
+      ttype: TokenType.NUMBER,
+      text: '10',
+      literal: 10,
+    },
+    {
+      ttype: TokenType.PLUS,
+      text: '+',
+    },
+    {
+      ttype: TokenType.NUMBER,
+      text: '18',
+      literal: 18,
+    },
+  ])
+})
+
+test('scanTokens handles decimal numbers', () => {
+  const tokens = new Scanner(' 10.8 + 2.4 ').scanTokens()
+  expect(tokens).toEqual([
+    {
+      ttype: TokenType.NUMBER,
+      text: '10.8',
+      literal: 10.8,
+    },
+    {
+      ttype: TokenType.PLUS,
+      text: '+',
+    },
+    {
+      ttype: TokenType.NUMBER,
+      text: '2.4',
+      literal: 2.4,
+    },
+  ])
+})
