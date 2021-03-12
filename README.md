@@ -3,11 +3,11 @@
 A simple terminal-based calculator 🧮
 
 ## Dependencies
-  - [node.js](nodejs.org)
+  - [node.js](nodejs.org) v14.11 or later
   - [npm](https://www.npmjs.com/)
 
 ## Setup  
-1. Download the .zip file or clone the repo using: 
+1. Download the .zip file or clone the repo using the github command line tool:
       
         gh repo clone chris-chen-creates/archilator
 2. Install the dependencies using:
@@ -20,6 +20,6 @@ A simple terminal-based calculator 🧮
 3. Within terminal, use the command:
    
         npm start 
-4. Type in some math problems using any of the following characters: `0-9 + - * / . ( ) ^`
+4. Enter an arithmetic equation into the prompt using any of the following characters: `0-9 + - * / . ( ) ^`
 5. Press **ENTER**
-6. The math problem output will be displayed on the next line
+6. The solution will be displayed on the next line
