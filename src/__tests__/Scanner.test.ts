@@ -163,3 +163,43 @@ test('scanTokens handles decimal numbers', () => {
     },
   ])
 })
+
+test('scanTokens handles numbers leading decimals', () => {
+  const tokens = new Scanner(' .25 + 4.75 ').scanTokens()
+  expect(tokens).toEqual([
+    {
+      ttype: TokenType.NUMBER,
+      text: '.25',
+      literal: 0.25,
+    },
+    {
+      ttype: TokenType.PLUS,
+      text: '+',
+    },
+    {
+      ttype: TokenType.NUMBER,
+      text: '4.75',
+      literal: 4.75,
+    },
+  ])
+})
+
+test('scanTokens handles multiple numbers leading decimals', () => {
+  const tokens = new Scanner('.23 + .56').scanTokens()
+  expect(tokens).toEqual([
+    {
+      ttype: TokenType.NUMBER,
+      text: '.23',
+      literal: 0.23,
+    },
+    {
+      ttype: TokenType.PLUS,
+      text: '+',
+    },
+    {
+      ttype: TokenType.NUMBER,
+      text: '.56',
+      literal: 0.56,
+    },
+  ])
+})
