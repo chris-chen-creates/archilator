@@ -1,21 +1,45 @@
-import { Token, TokenType } from './Token';
+import { Token } from './Token'
 
 export class Expression {}
 
-export class Binary extends Expression {
+export class Addition extends Expression {
 	constructor(
 		public left: Expression,
-		public op: Token,
 		public right: Expression,
 	) {
-		super();
+		super()
 	}
 }
 
-export class Literal extends Expression {
+export class Multiplication extends Expression {
+  constructor(
+    public left: Expression,
+    public right: Expression,
+  ) {
+    super()
+  }
+}
+
+export class Negative extends Expression {
+  constructor(
+    public expr: Expression,
+  ) {
+    super()
+  }
+}
+
+export class Group extends Expression {
+  constructor(
+    public expr: Expression,
+  ) {
+    super()
+  }
+}
+
+export class Num extends Expression {
 	constructor(
-		public value: any,
+		public val: number,
 	) {
-		super();
+		super()
 	}
 }

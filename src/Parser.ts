@@ -1,70 +1,116 @@
-import { Expression, Binary, Literal } from './Expression';
-import { Token, TokenType } from './Token';
+import {
+  Expression,
+  Addition,
+  Multiplication,
+  Negative,
+  Group,
+  Num,
+} from './Expression'
+import { Token, TokenType } from './Token'
 
 export function parse(tokens: Token[]): Expression {
-    return new Parser(tokens).parse();
+  return new Parser(tokens).parse()
 }
 
-class ParserError extends Error {};
+class ParserError extends Error {}
 
 export class Parser {
-	public index: number = 0;
+  public index: number = 0
 
-	constructor(
-		public tokens: Token[],
-	) {}
+  constructor(
+    public tokens: Token[],
+  ) {}
 
-	parse(): Expression {
-		if (this.tokens.length !== 3) {
-			throw(new ParserError("Wrong token types"));
-		}
-		let [left, op, right] = this.tokens;
-		return new Binary(
-			new Literal(left.literal),
-			op,
-			new Literal(right.literal),
-		);
-	}
+  parse(): Expression {
+    const expr = this.expression()
+    return expr
+  }
 
-	term(): Expression {
-		let expression = this.literal()
-		if (this.match(TokenType.PLUS)) {
-			const op = this.previous();
-			const right = this.literal();
-			expression = new Binary(expression, op, right);
-		}
-		return expression;
-	}
+  // BEGIN GRAMMAR FUNCTIONS
+  
+  expression(): Expression {
+    return this.multiplication()
+  }
 
-	literal(): Expression {
-		if (this.match(TokenType.NUMBER)) {
-			return new Literal(this.previous().literal);
-		}
-		throw(new ParserError("Unexpected primary parse token ${peek().type}"));
-	}
+  addition(): Expression {
+    let expression = this.negative()
+    while (this.match(TokenType.PLUS)) {
+      const right = this.negative()
+      expression = new Addition(expression, right)
+    }
+    return expression
+  }
 
-	match(...ttypes: TokenType[]): Boolean {
-		if (this.check(ttypes[0])) {
-			this.advance();
-			return true;
-		}
-		return false;
-	}
+  multiplication(): Expression {
+    let expression = this.addition()
 
-	check(ttype: TokenType): Boolean {
-		return this.peek().ttype === ttype;
-	}
+    if (this.match(TokenType.TIMES)) {
+      const right = this.addition()
+      expression = new Multiplication(expression, right)
+    }
 
-	peek(): Token {
-		return this.tokens[this.index];
-	}
+    return expression
+  }
 
-	advance(): Token {
-		this.index++;
-		return this.previous();
-	}
+  negative(): Expression {
+    if (this.match(TokenType.MINUS)) {
+      return this.primary()
+    } else {
+      return this.primary()
+    }
+  }
 
-	previous(): Token {
-		return this.tokens[this.index - 1];
-	}
+  primary(): Expression {
+    if (this.match(TokenType.LEFT_PAREN)) {
+      return this.group()
+    } else if (this.match(TokenType.NUMBER)) {
+      return this.num()
+    }
+    throw(new ParserError("unexpected primary parse token ${peek().type}"))
+  }
+
+  num(): Num {
+    return new Num(this.previous().literal)
+  }
+
+  group(): Expression {
+      const expr = this.expression()
+      this.consume(TokenType.RIGHT_PAREN)
+      return expr
+  }
+
+  // END GRAMMAR FUNCTIONS
+
+  match(ttype: TokenType): Boolean {
+    if (this.check(ttype)) {
+      return true
+    }
+    this.advance()
+    return false
+  }
+
+  check(ttype: TokenType): Boolean {
+    return this.peek().ttype === ttype
+  }
+
+  consume(ttype: TokenType) {
+    this.advance()
+  }
+
+  peek(): Token {
+    return this.tokens[this.index]
+  }
+
+  advance(): Token {
+    this.index++
+    return this.previous()
+  }
+
+  previous(): Token {
+    return this.tokens[this.index]
+  }
+
+  isAtEnd(): boolean {
+    return this.index >= this.tokens.length
+  }
 }

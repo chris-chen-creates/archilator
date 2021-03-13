@@ -23,3 +23,14 @@ A simple terminal-based calculator 🧮
 4. Enter an arithmetic equation into the prompt using any of the following characters: `0-9 + - * / . ( ) ^`
 5. Press **ENTER**
 6. The solution will be displayed on the next line
+
+## Grammar
+
+```
+expression -> addition ;
+addition -> multiplication ( "+" multiplication )* ;
+multipliciation -> negative ( "*" negative )* ;
+negative -> "-"? primary ;
+primary -> NUMBER | group ;
+group -> "(" expression ")" ;
+```
