@@ -27,10 +27,10 @@ A simple terminal-based calculator 🧮
 ## Grammar
 
 ```
-expression -> addition ;
-addition -> multiplication ( "+" multiplication )* ;
+expression      -> addition ;
+addition        -> multiplication ( "+" multiplication )* ;
 multipliciation -> negative ( "*" negative )* ;
-negative -> "-"? primary ;
-primary -> NUMBER | group ;
-group -> "(" expression ")" ;
+negative        -> "-"? primary ;
+primary         -> NUMBER | group ;
+group           -> "(" expression ")" ;
 ```
