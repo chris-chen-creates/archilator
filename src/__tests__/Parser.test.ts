@@ -9,6 +9,23 @@ import { Parser, parse } from '../Parser'
 import { scan } from '../Scanner'
 import { TokenType } from '../Token'
 
+/*
+previous retrieves the previous token -- passed
+previous throws an error if at the beginning -- passed
+match advances the index if the token matches -- passed
+match doesnt advance the index if the token doesnt match -- passed
+match doesnt do anything if at end -- passed
+consume checks the next token and if correct moves past it -- passed
+consume at the end of input with a good error -- passed
+consume fails on incorrect token
+parse is able to consume multiple of the same operation
+parse handles negative numbers correctly
+parse uses the correct order of operations
+parse group properly
+parse nested group properly
+parse throws an error if there are unparsed tokens
+*/
+
 test('previous retrieves the previous token', () => {
   const parser = new Parser(scan('1 + 2'))
   parser.index = 1

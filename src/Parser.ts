@@ -17,9 +17,7 @@ class ParserError extends Error {}
 export class Parser {
   public index: number = 0
 
-  constructor(
-    public tokens: Token[],
-  ) {}
+  constructor(public tokens: Token[]) {}
 
   parse(): Expression {
     const expr = this.expression()
@@ -27,7 +25,7 @@ export class Parser {
   }
 
   // BEGIN GRAMMAR FUNCTIONS
-  
+
   expression(): Expression {
     return this.multiplication()
   }
@@ -66,7 +64,7 @@ export class Parser {
     } else if (this.match(TokenType.NUMBER)) {
       return this.num()
     }
-    throw(new ParserError("unexpected primary parse token ${peek().type}"))
+    throw new ParserError('unexpected primary parse token ${peek().type}')
   }
 
   num(): Num {
@@ -74,27 +72,33 @@ export class Parser {
   }
 
   group(): Expression {
-      const expr = this.expression()
-      this.consume(TokenType.RIGHT_PAREN)
-      return expr
+    const expr = this.expression()
+    this.consume(TokenType.RIGHT_PAREN)
+    return expr
   }
 
   // END GRAMMAR FUNCTIONS
 
   match(ttype: TokenType): Boolean {
     if (this.check(ttype)) {
+      this.advance()
       return true
     }
-    this.advance()
     return false
   }
 
   check(ttype: TokenType): Boolean {
-    return this.peek().ttype === ttype
+    while (!this.isAtEnd) {
+      return this.peek().ttype === ttype
+    }
+    return false
   }
 
   consume(ttype: TokenType) {
-    this.advance()
+    while (!this.isAtEnd) {
+      this.advance()
+    }
+    throw new ParserError('unexpected end of input')
   }
 
   peek(): Token {
@@ -107,7 +111,13 @@ export class Parser {
   }
 
   previous(): Token {
-    return this.tokens[this.index]
+    if (this.tokens[this.index - 1] == undefined) {
+      throw new ParserError(
+        'cannot retrieve previous before beginning of string'
+      )
+    }
+    console.log(this.tokens[this.index - 1])
+    return this.tokens[this.index - 1]
   }
 
   isAtEnd(): boolean {
