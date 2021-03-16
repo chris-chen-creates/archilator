@@ -80,23 +80,26 @@ export class Parser {
   // END GRAMMAR FUNCTIONS
 
   match(ttype: TokenType): Boolean {
-    if (this.check(ttype)) {
-      this.advance()
-      return true
+    while (!this.isAtEnd()) {
+      if (this.check(ttype)) {
+        this.advance()
+        return true
+      }
+      return false
     }
     return false
   }
 
   check(ttype: TokenType): Boolean {
-    while (!this.isAtEnd) {
-      return this.peek().ttype === ttype
-    }
-    return false
+    return this.peek().ttype === ttype
   }
 
   consume(ttype: TokenType) {
-    while (!this.isAtEnd) {
-      this.advance()
+    while (!this.isAtEnd()) {
+      if (this.check(ttype)) {
+        return this.advance()
+      }
+      throw new ParserError('unexpected token')
     }
     throw new ParserError('unexpected end of input')
   }
@@ -106,7 +109,7 @@ export class Parser {
   }
 
   advance(): Token {
-    this.index++
+    if (!this.isAtEnd()) this.index++
     return this.previous()
   }
 
@@ -116,7 +119,6 @@ export class Parser {
         'cannot retrieve previous before beginning of string'
       )
     }
-    console.log(this.tokens[this.index - 1])
     return this.tokens[this.index - 1]
   }
 
