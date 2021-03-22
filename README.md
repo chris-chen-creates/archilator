@@ -29,7 +29,8 @@ A simple terminal-based calculator 🧮
 ```
 expression      -> addition ;
 addition        -> multiplication ( "+" multiplication )* ;
-multipliciation -> negative ( "*" negative )* ;
+multipliciation -> division ( "*" division )* ;
+division        -> negative ( "/" negative )* ;
 negative        -> "-"? primary ;
 primary         -> NUMBER | group ;
 group           -> "(" expression ")" ;

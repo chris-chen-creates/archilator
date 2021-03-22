@@ -5,6 +5,7 @@ import {
   Negative,
   Group,
   Num,
+  Division,
 } from './Expression'
 import { Token, TokenType } from './Token'
 
@@ -32,7 +33,8 @@ export class Parser {
   GRAMMAR
 expression      -> addition ;
 addition        -> multiplication ( "+" multiplication )* ;
-multipliciation -> negative ( "*" negative )* ;
+multipliciation -> division ( "*" division )* ;
+division        -> negative ( "/" negative )* ;
 negative        -> "-"? primary ;
 primary         -> NUMBER | group ;
 group           -> "(" expression ")" ;
@@ -52,12 +54,20 @@ group           -> "(" expression ")" ;
   }
 
   multiplication(): Expression {
-    let expression = this.negative()
+    let expression = this.division()
     while (this.match(TokenType.TIMES)) {
-      const right = this.negative()
+      const right = this.division()
       expression = new Multiplication(expression, right)
     }
+    return expression
+  }
 
+  division(): Expression {
+    let expression = this.negative()
+    while (this.match(TokenType.DIVIDE)) {
+      const right = this.negative()
+      expression = new Division(expression, right)
+    }
     return expression
   }
 

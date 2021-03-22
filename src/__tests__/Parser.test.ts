@@ -1,4 +1,11 @@
-import { Addition, Multiplication, Negative, Group, Num } from '../Expression'
+import {
+  Addition,
+  Multiplication,
+  Negative,
+  Group,
+  Num,
+  Division,
+} from '../Expression'
 import { Parser, parse } from '../Parser'
 import { scan } from '../Scanner'
 import { TokenType } from '../Token'
@@ -90,6 +97,13 @@ test('parse group properly', () => {
       new Group(new Addition(new Num(5), new Num(4))),
       new Num(3)
     )
+  )
+})
+
+test('parse handles division properly', () => {
+  const parseTree = parse(scan('4 / 2 + 2'))
+  expect(parseTree).toEqual(
+    new Addition(new Division(new Num(4), new Num(2)), new Num(2))
   )
 })
 
