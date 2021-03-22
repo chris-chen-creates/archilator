@@ -21,6 +21,9 @@ export class Parser {
 
   parse(): Expression {
     const expr = this.expression()
+    if (this.isAtEnd() == false) {
+      throw new ParserError('unparsed tokens')
+    }
     return expr
   }
 
