@@ -151,6 +151,19 @@ test('parse nested group properly', () => {
 
 test('parse throws an error if there are unparsed tokens', () => {
   expect(() => {
-    parse(scan('(3 + 4) 4'))
+    parse(scan('(3 + 4) 5'))
   }).toThrow(/.*unparsed tokens.*/)
 })
+
+test('is addition also valid multiplaction?', () => {
+  let parser = new Parser(scan('5 + 4'))
+  console.log(parser.multiplication())
+})
+// ^^^ NO
+
+test('is multiplication also valid addition?', () => {
+  let parser = new Parser(scan('5 * 4'))
+  console.log(parser.addition())
+})
+
+// ^^^ YES

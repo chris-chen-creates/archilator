@@ -6,6 +6,8 @@ import {
   Group,
   Num,
   Division,
+  Exponent,
+  Subtraction,
 } from './Expression'
 import { Token, TokenType } from './Token'
 
@@ -23,50 +25,60 @@ export class Parser {
   parse(): Expression {
     const expr = this.expression()
     if (this.isAtEnd() == false) {
-      throw new ParserError('unparsed tokens')
+      throw new ParserError(
+        `There are unparsed tokens still in the equation: ${this.expression()}`
+      )
     }
     return expr
   }
 
   // BEGIN GRAMMAR FUNCTIONS
-  /*
-  GRAMMAR
-expression      -> addition ;
-addition        -> multiplication ( "+" multiplication )* ;
-multipliciation -> division ( "*" division )* ;
-division        -> negative ( "/" negative )* ;
-negative        -> "-"? primary ;
-primary         -> NUMBER | group ;
-group           -> "(" expression ")" ;
-  */
 
   expression(): Expression {
-    return this.addition()
+    return this.subtraction()
+  }
+
+  subtraction(): Expression {
+    let expression = this.addition()
+    while (this.match(TokenType.MINUS)) {
+      const right = this.addition()
+      expression = new Subtraction(expression, right)
+    }
+    return expression
   }
 
   addition(): Expression {
-    let expression = this.multiplication()
+    let expression = this.division()
     while (this.match(TokenType.PLUS)) {
-      const right = this.multiplication()
+      const right = this.division()
       expression = new Addition(expression, right)
     }
     return expression
   }
 
+  division(): Expression {
+    let expression = this.multiplication()
+    while (this.match(TokenType.DIVIDE)) {
+      const right = this.multiplication()
+      expression = new Division(expression, right)
+    }
+    return expression
+  }
+
   multiplication(): Expression {
-    let expression = this.division()
+    let expression = this.exponent()
     while (this.match(TokenType.TIMES)) {
-      const right = this.division()
+      const right = this.exponent()
       expression = new Multiplication(expression, right)
     }
     return expression
   }
 
-  division(): Expression {
+  exponent(): Expression {
     let expression = this.negative()
-    while (this.match(TokenType.DIVIDE)) {
+    while (this.match(TokenType.POW)) {
       const right = this.negative()
-      expression = new Division(expression, right)
+      expression = new Exponent(expression, right)
     }
     return expression
   }
@@ -135,7 +147,7 @@ group           -> "(" expression ")" ;
   }
 
   previous(): Token {
-    if (this.tokens[this.index - 1] == undefined) {
+    if (this.index < 1) {
       throw new ParserError(
         'cannot retrieve previous before beginning of string'
       )
