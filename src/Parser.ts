@@ -22,7 +22,9 @@ export class Parser {
   parse(): Expression {
     const expr = this.expression()
     if (this.isAtEnd() == false) {
-      throw new ParserError('unparsed tokens')
+      throw new ParserError(
+        `There are unparsed tokens still in the equation: ${this.expression()}`
+      )
     }
     return expr
   }
@@ -125,7 +127,7 @@ group           -> "(" expression ")" ;
   }
 
   previous(): Token {
-    if (this.tokens[this.index - 1] == undefined) {
+    if (this.index < 1) {
       throw new ParserError(
         'cannot retrieve previous before beginning of string'
       )
