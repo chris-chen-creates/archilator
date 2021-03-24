@@ -2,6 +2,13 @@ import { Token } from './Token'
 
 export class Expression {}
 
+
+export class Subtraction extends Expression {
+  constructor(public left: Expression, public right: Expression){
+    super()
+  }
+}
+
 export class Addition extends Expression {
   constructor(public left: Expression, public right: Expression) {
     super()
@@ -22,6 +29,12 @@ export class Negative extends Expression {
 
 export class Division extends Expression {
   constructor(public left: Expression, public right: Expression) {
+    super()
+  }
+}
+
+export class Exponent extends Expression {
+  constructor (public left: Expression, public right: Expression) {
     super()
   }
 }
