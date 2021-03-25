@@ -1,10 +1,4 @@
-import {
-  Addition,
-  Multiplication,
-  Negative,
-  Group,
-  Num,
-} from '../Expression'
+import { Addition, Multiplication, Negative, Group, Num } from '../Expression'
 import { Parser, parse } from '../Parser'
 import { scan } from '../Scanner'
 import { TokenType } from '../Token'
@@ -73,35 +67,19 @@ test('consume fails on incorrect token', () => {
 test('parse is able to consume multiple of the same operation', () => {
   const parseTree = parse(scan('3 * 4 * 6'))
   expect(parseTree).toEqual(
-    new Multiplication(
-      new Multiplication(
-        new Num(3),
-        new Num(4),
-      ),
-      new Num(6),
-    ),
+    new Multiplication(new Multiplication(new Num(3), new Num(4)), new Num(6))
   )
 })
 
 test('parse handles negative numbers correctly', () => {
   const parseTree = parse(scan('-5'))
-  expect(parseTree).toEqual(
-    new Negative(
-      new Num(5),
-    ),
-  )
+  expect(parseTree).toEqual(new Negative(new Num(5)))
 })
 
 test('parse uses the correct order of operations', () => {
-  const parseTree = parse(scan('5 + 4 * 3'))
+  const parseTree = parse(scan('5 * 4 + 3'))
   expect(parseTree).toEqual(
-    new Addition(
-      new Num(5),
-      new Multiplication(
-        new Num(4),
-        new Num(3),
-      ),
-    ),
+    new Addition(new Multiplication(new Num(5), new Num(4)), new Num(3))
   )
 })
 
@@ -109,14 +87,36 @@ test('parse group properly', () => {
   const parseTree = parse(scan('(5 + 4) * 3'))
   expect(parseTree).toEqual(
     new Multiplication(
-      new Group(
-        new Addition(
-          new Num(5),
-          new Num(4),
-        ),
-      ),
-      new Num(3),
-    ),
+      new Group(new Addition(new Num(5), new Num(4))),
+      new Num(3)
+    )
+  )
+})
+
+test('parse number test 2', () => {
+  const parseTree = parse(scan('5 + 4 * 3'))
+  expect(parseTree).toEqual(
+    new Addition(new Num(5), new Multiplication(new Num(4), new Num(3)))
+  )
+})
+
+test('parse number test 3', () => {
+  const parseTree = parse(scan('5 + 4 * 3 + 8'))
+  expect(parseTree).toEqual(
+    new Addition(
+      new Addition(new Num(5), new Multiplication(new Num(4), new Num(3))),
+      new Num(8)
+    )
+  )
+})
+
+test('parse number test 4', () => {
+  const parseTree = parse(scan('5 + 4 * 3 + 8 * 6'))
+  expect(parseTree).toEqual(
+    new Addition(
+      new Addition(new Num(5), new Multiplication(new Num(4), new Num(3))),
+      new Multiplication(new Num(8), new Num(6))
+    )
   )
 })
 
@@ -126,20 +126,14 @@ test('parse nested group properly', () => {
     new Multiplication(
       new Group(
         new Addition(
-          new Group(
-            new Addition(
-              new Num(5),
-              new Num(4),
-            ),
-          ),
-          new Num(1),
-        ),
+          new Group(new Addition(new Num(5), new Num(4))),
+          new Num(1)
+        )
       ),
-      new Num(3),
-    ),
+      new Num(3)
+    )
   )
 })
-
 
 test('parse throws an error if there are unparsed tokens', () => {
   expect(() => {

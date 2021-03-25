@@ -17,35 +17,46 @@ class ParserError extends Error {}
 export class Parser {
   public index: number = 0
 
-  constructor(
-    public tokens: Token[],
-  ) {}
+  constructor(public tokens: Token[]) {}
 
   parse(): Expression {
     const expr = this.expression()
+    if (this.isAtEnd() == false) {
+      throw new ParserError(
+        `There are unparsed tokens still in the equation: ${this.expression()}`
+      )
+    }
     return expr
   }
 
   // BEGIN GRAMMAR FUNCTIONS
-  
+  /*
+  GRAMMAR
+expression      -> addition ;
+addition        -> multiplication ( "+" multiplication )* ;
+multipliciation -> negative ( "*" negative )* ;
+negative        -> "-"? primary ;
+primary         -> NUMBER | group ;
+group           -> "(" expression ")" ;
+  */
+
   expression(): Expression {
-    return this.multiplication()
+    return this.addition()
   }
 
   addition(): Expression {
-    let expression = this.negative()
+    let expression = this.multiplication()
     while (this.match(TokenType.PLUS)) {
-      const right = this.negative()
+      const right = this.multiplication()
       expression = new Addition(expression, right)
     }
     return expression
   }
 
   multiplication(): Expression {
-    let expression = this.addition()
-
-    if (this.match(TokenType.TIMES)) {
-      const right = this.addition()
+    let expression = this.negative()
+    while (this.match(TokenType.TIMES)) {
+      const right = this.negative()
       expression = new Multiplication(expression, right)
     }
 
@@ -54,7 +65,7 @@ export class Parser {
 
   negative(): Expression {
     if (this.match(TokenType.MINUS)) {
-      return this.primary()
+      return new Negative(this.primary())
     } else {
       return this.primary()
     }
@@ -66,7 +77,7 @@ export class Parser {
     } else if (this.match(TokenType.NUMBER)) {
       return this.num()
     }
-    throw(new ParserError("unexpected primary parse token ${peek().type}"))
+    throw new ParserError(`unexpected primary parse token ${this.peek().ttype}`)
   }
 
   num(): Num {
@@ -74,18 +85,21 @@ export class Parser {
   }
 
   group(): Expression {
-      const expr = this.expression()
-      this.consume(TokenType.RIGHT_PAREN)
-      return expr
+    const expr = this.expression()
+    this.consume(TokenType.RIGHT_PAREN)
+    return new Group(expr)
   }
 
   // END GRAMMAR FUNCTIONS
 
   match(ttype: TokenType): Boolean {
-    if (this.check(ttype)) {
-      return true
+    while (!this.isAtEnd()) {
+      if (this.check(ttype)) {
+        this.advance()
+        return true
+      }
+      return false
     }
-    this.advance()
     return false
   }
 
@@ -94,7 +108,13 @@ export class Parser {
   }
 
   consume(ttype: TokenType) {
-    this.advance()
+    while (!this.isAtEnd()) {
+      if (this.check(ttype)) {
+        return this.advance()
+      }
+      throw new ParserError('unexpected token')
+    }
+    throw new ParserError('unexpected end of input')
   }
 
   peek(): Token {
@@ -102,12 +122,17 @@ export class Parser {
   }
 
   advance(): Token {
-    this.index++
+    if (!this.isAtEnd()) this.index++
     return this.previous()
   }
 
   previous(): Token {
-    return this.tokens[this.index]
+    if (this.index < 1) {
+      throw new ParserError(
+        'cannot retrieve previous before beginning of string'
+      )
+    }
+    return this.tokens[this.index - 1]
   }
 
   isAtEnd(): boolean {
