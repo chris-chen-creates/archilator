@@ -71,6 +71,10 @@ export class Parser {
       const right = this.exponent()
       expression = new Multiplication(expression, right)
     }
+    // if (expression != ) {
+    //   throw new ParserError('Addition is not valid multiplication')
+    // }
+    // console.log(expression)
     return expression
   }
 
@@ -113,7 +117,7 @@ export class Parser {
   // END GRAMMAR FUNCTIONS
 
   match(ttype: TokenType): Boolean {
-    while (!this.isAtEnd()) {
+    if (!this.isAtEnd()) {
       if (this.check(ttype)) {
         this.advance()
         return true
@@ -128,7 +132,7 @@ export class Parser {
   }
 
   consume(ttype: TokenType) {
-    while (!this.isAtEnd()) {
+    if (!this.isAtEnd()) {
       if (this.check(ttype)) {
         return this.advance()
       }
