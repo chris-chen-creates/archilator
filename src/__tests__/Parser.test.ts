@@ -1,4 +1,11 @@
-import { Addition, Multiplication, Negative, Group, Num } from '../Expression'
+import {
+  Addition,
+  Multiplication,
+  Negative,
+  Group,
+  Num,
+  Division,
+} from '../Expression'
 import { Parser, parse } from '../Parser'
 import { scan } from '../Scanner'
 import { TokenType } from '../Token'
@@ -93,6 +100,13 @@ test('parse group properly', () => {
   )
 })
 
+test('parse handles division properly', () => {
+  const parseTree = parse(scan('4 / 2 + 2'))
+  expect(parseTree).toEqual(
+    new Addition(new Division(new Num(4), new Num(2)), new Num(2))
+  )
+})
+
 test('parse number test 2', () => {
   const parseTree = parse(scan('5 + 4 * 3'))
   expect(parseTree).toEqual(
@@ -137,6 +151,17 @@ test('parse nested group properly', () => {
 
 test('parse throws an error if there are unparsed tokens', () => {
   expect(() => {
-    parse(scan('(3 + 4) 4'))
+    parse(scan('(3 + 4) 5'))
   }).toThrow(/.*unparsed tokens.*/)
+})
+
+test('is addition also valid multiplaction?', () => {
+  let parser = new Parser(scan('5 + 4'))
+  expect(() => {
+    parser.multiplication()
+  }).toThrow(/.*Addition is not valid multiplication.*/)
+})
+
+test('is multiplication also valid addition?', () => {
+  let parser = new Parser(scan('5 * 4'))
 })

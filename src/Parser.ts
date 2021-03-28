@@ -5,6 +5,9 @@ import {
   Negative,
   Group,
   Num,
+  Division,
+  Exponent,
+  Subtraction,
 } from './Expression'
 import { Token, TokenType } from './Token'
 
@@ -30,36 +33,57 @@ export class Parser {
   }
 
   // BEGIN GRAMMAR FUNCTIONS
-  /*
-  GRAMMAR
-expression      -> addition ;
-addition        -> multiplication ( "+" multiplication )* ;
-multipliciation -> negative ( "*" negative )* ;
-negative        -> "-"? primary ;
-primary         -> NUMBER | group ;
-group           -> "(" expression ")" ;
-  */
 
   expression(): Expression {
-    return this.addition()
+    return this.subtraction()
+  }
+
+  subtraction(): Expression {
+    let expression = this.addition()
+    while (this.match(TokenType.MINUS)) {
+      const right = this.addition()
+      expression = new Subtraction(expression, right)
+    }
+    return expression
   }
 
   addition(): Expression {
-    let expression = this.multiplication()
+    let expression = this.division()
     while (this.match(TokenType.PLUS)) {
-      const right = this.multiplication()
+      const right = this.division()
       expression = new Addition(expression, right)
     }
     return expression
   }
 
+  division(): Expression {
+    let expression = this.multiplication()
+    while (this.match(TokenType.DIVIDE)) {
+      const right = this.multiplication()
+      expression = new Division(expression, right)
+    }
+    return expression
+  }
+
   multiplication(): Expression {
-    let expression = this.negative()
+    let expression = this.exponent()
     while (this.match(TokenType.TIMES)) {
-      const right = this.negative()
+      const right = this.exponent()
       expression = new Multiplication(expression, right)
     }
+    // if (expression != ) {
+    //   throw new ParserError('Addition is not valid multiplication')
+    // }
+    // console.log(expression)
+    return expression
+  }
 
+  exponent(): Expression {
+    let expression = this.negative()
+    while (this.match(TokenType.POW)) {
+      const right = this.negative()
+      expression = new Exponent(expression, right)
+    }
     return expression
   }
 
@@ -93,7 +117,7 @@ group           -> "(" expression ")" ;
   // END GRAMMAR FUNCTIONS
 
   match(ttype: TokenType): Boolean {
-    while (!this.isAtEnd()) {
+    if (!this.isAtEnd()) {
       if (this.check(ttype)) {
         this.advance()
         return true
@@ -108,7 +132,7 @@ group           -> "(" expression ")" ;
   }
 
   consume(ttype: TokenType) {
-    while (!this.isAtEnd()) {
+    if (!this.isAtEnd()) {
       if (this.check(ttype)) {
         return this.advance()
       }
