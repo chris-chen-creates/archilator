@@ -1,6 +1,12 @@
-import { Token, TokenType } from './Token'
-import { Expression, Addition, Num, Multiplication } from './Expression'
-
+import {
+  Expression,
+  Addition,
+  Num,
+  Multiplication,
+  Subtraction,
+  Division,
+  Negative,
+} from './Expression'
 import { scan } from './Scanner'
 import { parse } from './Parser'
 
@@ -14,11 +20,20 @@ export class Interpreter {
   }
 
   evaluate(expr: Expression): any {
+    if (expr instanceof Subtraction) {
+      return this.evaluateSubtraction(expr)
+    }
     if (expr instanceof Addition) {
       return this.evaluateAddition(expr)
     }
     if (expr instanceof Multiplication) {
       return this.evaluateMultiplication(expr)
+    }
+    if (expr instanceof Negative) {
+      return expr
+    }
+    if (expr instanceof Division) {
+      return this.evaluateDivision(expr)
     }
     if (expr instanceof Num) {
       return expr.val
@@ -26,6 +41,12 @@ export class Interpreter {
     throw new InterpreterError(
       `Expression type not known ${expr.constructor.name}`
     )
+  }
+
+  evaluateSubtraction({ left, right }: Subtraction) {
+    const leftVal = this.evaluate(left)
+    const rightVal = this.evaluate(right)
+    return leftVal - rightVal
   }
 
   evaluateAddition({ left, right }: Addition) {
@@ -38,5 +59,11 @@ export class Interpreter {
     const leftVal = this.evaluate(left)
     const rightVal = this.evaluate(right)
     return leftVal * rightVal
+  }
+
+  evaluateDivision({ left, right }: Division) {
+    const leftVal = this.evaluate(left)
+    const rightVal = this.evaluate(right)
+    return leftVal / rightVal
   }
 }
