@@ -6,6 +6,8 @@ import {
   Subtraction,
   Division,
   Negative,
+  Exponent,
+  Group,
 } from './Expression'
 import { scan } from './Scanner'
 import { parse } from './Parser'
@@ -35,8 +37,14 @@ export class Interpreter {
     if (expr instanceof Division) {
       return this.evaluateDivision(expr)
     }
+    if (expr instanceof Exponent) {
+      return this.evaluateExponent(expr)
+    }
     if (expr instanceof Num) {
       return expr.val
+    }
+    if (expr instanceof Group) {
+      return this.evaluateGroup(expr)
     }
     throw new InterpreterError(
       `Expression type not known ${expr.constructor.name}`
@@ -70,5 +78,16 @@ export class Interpreter {
     const leftVal = this.evaluate(left)
     const rightVal = this.evaluate(right)
     return leftVal / rightVal
+  }
+
+  evaluateExponent({ left, right }: Exponent) {
+    const leftVal = this.evaluate(left)
+    const rightVal = this.evaluate(right)
+    return Math.pow(leftVal, rightVal)
+  }
+
+  evaluateGroup({ expr }: Group) {
+    const val = this.evaluate(expr)
+    return val
   }
 }
