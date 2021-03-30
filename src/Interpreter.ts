@@ -30,7 +30,7 @@ export class Interpreter {
       return this.evaluateMultiplication(expr)
     }
     if (expr instanceof Negative) {
-      return expr
+      return this.evaluateNegative(expr)
     }
     if (expr instanceof Division) {
       return this.evaluateDivision(expr)
@@ -47,6 +47,11 @@ export class Interpreter {
     const leftVal = this.evaluate(left)
     const rightVal = this.evaluate(right)
     return leftVal - rightVal
+  }
+
+  evaluateNegative({ expr }: Negative) {
+    const val = this.evaluate(expr) * -1
+    return val
   }
 
   evaluateAddition({ left, right }: Addition) {
