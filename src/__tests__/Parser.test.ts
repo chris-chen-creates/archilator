@@ -157,9 +157,8 @@ test('parse throws an error if there are unparsed tokens', () => {
 
 test('is addition also valid multiplaction?', () => {
   let parser = new Parser(scan('5 + 4'))
-  expect(() => {
-    parser.multiplication()
-  }).toThrow(/.*Addition is not valid multiplication.*/)
+  parser.multiplication()
+  expect(parser.isAtEnd()).toBeFalsy()
 })
 
 test('is multiplication also valid addition?', () => {

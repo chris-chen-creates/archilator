@@ -71,10 +71,6 @@ export class Parser {
       const right = this.exponent()
       expression = new Multiplication(expression, right)
     }
-    // if (expression != ) {
-    //   throw new ParserError('Addition is not valid multiplication')
-    // }
-    // console.log(expression)
     return expression
   }
 
