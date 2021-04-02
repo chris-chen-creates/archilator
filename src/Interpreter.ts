@@ -31,14 +31,14 @@ export class Interpreter {
     if (expr instanceof Multiplication) {
       return this.evaluateMultiplication(expr)
     }
+    if (expr instanceof Exponent) {
+      return this.evaluateExponent(expr)
+    }
     if (expr instanceof Negative) {
       return this.evaluateNegative(expr)
     }
     if (expr instanceof Division) {
       return this.evaluateDivision(expr)
-    }
-    if (expr instanceof Exponent) {
-      return this.evaluateExponent(expr)
     }
     if (expr instanceof Num) {
       return expr.val
